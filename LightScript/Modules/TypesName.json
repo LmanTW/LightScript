@@ -1,0 +1,11 @@
+{
+  "string": "字串",
+  "number": "數字",
+  "nan": "非數",
+  "boolean": "布林值",
+  "none": "無",
+
+  "operator": "運算符",
+  "container":"容器",
+  "keyword":"關鍵字"
+}
