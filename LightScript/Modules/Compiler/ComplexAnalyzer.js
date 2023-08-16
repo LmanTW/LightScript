@@ -1,7 +1,9 @@
 //複雜分析器
 export default (codeSegment, filePath) => {
   let state = {}
+
   let codeSegment2 = []
+  let errors = []
 
   for (let i = 0; i < codeSegment.length; i++) {
     if (state.type === undefined) {
@@ -11,16 +13,19 @@ export default (codeSegment, filePath) => {
     } else {
       if (state.type === 'array' || state.type === 'index') {
         if (codeSegment[i].type === ']' && codeSegment[i].layer === state.layer) {
-          console.log(state.value)
+          for (let i2 = 0; i2 < state.value.length; i2++) {
+            let data = checkRelevance(state.value[i2], filePath)
+            if (data.error) errors = errors.concat(data.errors)
+            data = checkKeywordSyntax(state.value[i2], filePath)
+            if (data.error) errors = errors.concat(data.errors)
+          }
         } else if (codeSegment[i].type === ',') state.value.push([])
         else state.value[state.value.length-1].push(codeSegment[i])
       }
     }
   }
 
-  let data = 
-  if ()
   return 
 }
 
-import { checkKeywordSyntax, check }
+import { checkRelevance, checkKeywordSyntax } from './SyntaxChecker.js'

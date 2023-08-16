@@ -12,7 +12,6 @@ import compile from '../Compiler/Main.js'
 (async () => {
   await sendMessage({ type: 'event', name: 'state', data: 'compiling' })
 
-  console.log(1)
   let codeSegment = compile(fs.readFileSync(mainFilePath, 'utf8'), mainFilePath)
 
   console.log(codeSegment)

@@ -5,6 +5,7 @@ export default (code, filePath) => {
   let line = 1
 
   let codeSegment = []
+  let errors = []
 
   //切斷
   function breakOff (char, i) {
@@ -70,10 +71,11 @@ export default (code, filePath) => {
     }
   }
 
-  if (state.type === 'string') return createError('compiler', '<字串> 無法閉合', state.start, code.length-1, [{ file: filePath, line: state.line }])
+  if (state.type === 'string') errors.push(createError('compiler', '<字串> 無法閉合', state.start, code.length-1, [{ file: filePath, line: state.line }]))
   else if (state.type !== undefined) breakOff('', code.length)
   
-  return { error: false, codeSegment }
+  if (errors.length > 0) return { error: true, errors }
+  else return { error: false, codeSegment }
 }
 
 import createError from '../Tools/CreateError.js'
