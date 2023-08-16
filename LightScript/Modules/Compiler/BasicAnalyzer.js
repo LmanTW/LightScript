@@ -1,5 +1,5 @@
 //基礎分析器
-export default (code) => {
+export default (code, filePath) => {
   let state = {}
   let layer = 0
   let line = 1
@@ -34,6 +34,9 @@ export default (code) => {
       breakOff(code[i], i)
       layer--
       codeSegment.push({ type: code[i], line, layer, start: i, end: i })
+    } else if (code[i] === ',' || code[i] === ':') {
+      breakOff(code[i], i)
+      codeSegment.push({ type: code[i], line, layer, start: i, end: i })
     } else if (state.type === undefined) {
       if (code[i] === "'" || code[i] === '"') state = { type: 'string', value: '', symbol: code[i], line, layer, start: i }
       else if ('1234567890'.includes(code[i])) state = { type: 'number', value: code[i], line, layer, start: i }
@@ -67,13 +70,13 @@ export default (code) => {
     }
   }
 
-  if (state.type === 'string') return { error: true, content: '<字串> 無法閉合', start: state.start, end: code.length-1, path: [{ file: getDirectoryPath(import.meta.url), line: state.line }] }
+  if (state.type === 'string') return createError('compiler', '<字串> 無法閉合', state.start, code.length-1, [{ file: filePath, line: state.line }])
   else if (state.type !== undefined) breakOff('', code.length)
   
-  return codeSegment
+  return { error: false, codeSegment }
 }
 
-import getDirectoryPath from '../Tools/GetDirectoryPath.js'
+import createError from '../Tools/CreateError.js'
 
 import keywords from '../Keywords.json' assert { type: 'json' }
 

@@ -2,31 +2,25 @@ import { Worker } from 'worker_threads'
 import path from 'path'
 import fs from 'fs'
 
-export { Actuator }
-
-import objectValueError from './Modules/Tools/ObjectValueError.js'
-import getDirectoryPath from './Modules/Tools/GetDirectoryPath.js'
-import generateID from './Modules/Tools/GenerateID.js'
-import getPath from './Modules/Tools/GetPath.js'
-
 //執行器
 class Actuator {
   #options
   #data = {
-    log: []
+    state: 'idle',
+    log: [],
+    mainFilePath: undefined,
+    worker: undefined
   }
   #event = {}
 
-  constructor (mainFilePath, options) {
-    if (typeof mainFilePath !== 'string') throw new Error('參數 mainFilePath 只能為 <string>')
-    if (!fs.existsSync(mainFilePath)) throw new Error(`找不到檔案 ${mainFilePath}`)
-    if (path.extname(mainFilePath) !== '.light') throw new Error(`檔案的副檔名必須為 .light`)
+  constructor (options) {
+    if (options !== undefined && typeof options !== 'object') throw new Error(`參數 ${options} 必須為一個 <object>`)
 
     this.#options = Object.assign({
       //效能設定
       loopType: 'instant', //instant interval
       maxChunkPerExecution: 100,
-      maxVirtualMemorySpace: (1000000)*10,
+      maxVirtualMemory: (1000000)*10,
 
       //輸出設定
       logToConsole: true,
@@ -38,10 +32,10 @@ class Actuator {
       maxVirtualDiskSpace: 1000000000
     }, (options === undefined) ? {} : options)
 
-    objectValueError('options', {
+    checkObjectValueType('options', {
       loopType: { value: ['instant', 'interval'] },
       maxChunkPerExecution: { type: ['number'], moreThan: 0 },
-      maxVirtualMemorySpace: { type: ['number'], moreThan: 0 },
+      maxVirtualMemory: { type: ['number'], moreThan: 0 },
 
       logToConsole: { type: ['boolean'] },
       saveLog: { type: ['boolean'] },
@@ -50,25 +44,19 @@ class Actuator {
       virtualDisk: { type: ['boolean'] },
       maxVirtualDiskSpace: { type: ['number'], moreThan: 0 }
     }, this.#options)
-
-    this.#data = {
-      state: 'idle',
-      worker: undefined,
-      code: fs.readFileSync(mainFilePath, 'utf8'),
-      log: []
-    }
   }
 
   get state () {return this.#data.state}
-  get log () {return this.#data.log}
 
-  //運行執行器
-  async run () {
-    if (this.#data.state !== 'idle') throw new Error(`無法運行執行器 (執行器狀態: ${this.#data.state})`)
+  //運行
+  run (mainFilePath) {
+    if (typeof mainFilePath !== 'string') throw new Error('參數 mainFilePath 必須為一個 <string>')
+    if (!fs.existsSync(mainFilePath)) throw new Error(`找不到檔案 ${mainFilePath}`)
+    if (path.extname(mainFilePath) !== '.light') throw new Error('檔案的副檔名必須為 .light')
+    if (this.#data.state !== 'idle') throw new Error(`無法執行該執行器，因為執行器的狀態為 ${this.#data.state}`)
 
-    this.#data.state = 'booting'
-    this.#data.worker = new Worker(getPath(getDirectoryPath(import.meta.url), ['Modules', 'Actuator', 'Main.js']), { workerData: { options: this.#options, code: this.#data.code }})
-    this.#data.worker.on('message', this.#handleWorkerMessage)
+    this.#data.worker = new Worker(getPath(getDiretoryPath(import.meta.url), ['Modules', 'Actuator', 'Main.js']), { workerData: { mainFilePath, options: this.#options }})
+    this.#data.worker.on('message', (msg) => this.#handleWorkerMessage(msg))
   }
 
   //聆聽事件
@@ -87,19 +75,28 @@ class Actuator {
     }
   }
 
-  //處理Worker訊息
+  //處理Worker的訊息
   #handleWorkerMessage (msg) {
-    if (msg.type === 'event') {
-      if (msg.name === 'log') {
-        if (this.#data.options.logToConsole) console.log(msg.data.content)
-        if (this.#data.options.saveLog) this.#data.log.push(msg.data)
-      }
-    }
-    console.log(msg)
+    if (msg.type === 'event') this.#callEvent(msg.name, msg.data)
+    
+    this.#data.worker.postMessage({ type: 'return', messageID: msg.messageID })
   }
 
   //呼叫事件
   #callEvent (name, data) {
+    if (name === 'state') this.#data.state = data 
+    else if (name === 'log') {
+      if (this.#options.logToConsole) console.log(`${(data.type === 'actuator') ? '[執行器]: ' : ''}${data.content}`)
+      if (this.#options.saveLog) this.#data.log.push(data)
+    }// else if (name === 'error') this.#callEvent('log', { type: 'normal', content: logError(data), location: {} })
+
     if (this.#event[name] !== undefined) Object.keys(this.#event[name]).forEach((item) => this.#event[name][item](data))
   }
 }
+
+export { Actuator }
+
+import checkObjectValueType from './Modules/Tools/CheckObjectValueType.js'
+import getDiretoryPath from './Modules/Tools/GetDirectoryPath.js'
+import generateID from './Modules/Tools/GenerateID.js'
+import getPath from './Modules/Tools/GetPath.js'

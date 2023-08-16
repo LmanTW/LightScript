@@ -4,8 +4,15 @@
   "nan": "非數",
   "boolean": "布林值",
   "none": "無",
+  "array": "陣列",
+  "object": "物件",
+  "function": "函數",
 
-  "operator": "運算符",
   "container":"容器",
-  "keyword":"關鍵字"
+  "keyword":"關鍵字",
+  "operator": "運算符",
+  "key": "鑰",
+  "indexes": "索引列",
+  "parameters": "參數列",
+  "chunk": "區塊"
 }
