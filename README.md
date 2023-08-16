@@ -1,4 +1,5 @@
-# LightScript
-一個中文的虛擬程式語言。
+# Light Script
+一個基於 Javascript 的中文虛擬程式語言。
 
-(還在開發中)
+## 目錄
+* [開始學習 Light Script]
