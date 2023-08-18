@@ -5,7 +5,7 @@
 > 學習一件事應該要是享受，且有成就感的。
 
 ## 目錄
-* [安裝 Light Script](#安裝LightScript)
+* [安裝 Light Script](#安裝-light-script)
 
 ## 安裝 Light Script
 
