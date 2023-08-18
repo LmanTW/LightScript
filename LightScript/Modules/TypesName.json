@@ -8,8 +8,9 @@
   "object": "物件",
   "function": "函數",
 
-  "container":"容器",
-  "keyword":"關鍵字",
+  "container": "容器",
+  "keyword": "關鍵字",
+  "symbol": "符號",
   "operator": "運算符",
   "key": "鑰",
   "indexes": "索引列",

@@ -77,18 +77,22 @@ class Actuator {
 
   //處理Worker的訊息
   #handleWorkerMessage (msg) {
-    if (msg.type === 'event') this.#callEvent(msg.name, msg.data)
-    
     this.#data.worker.postMessage({ type: 'return', messageID: msg.messageID })
+    
+    if (msg.type === 'event') this.#callEvent(msg.name, msg.data)
   }
 
   //呼叫事件
   #callEvent (name, data) {
-    if (name === 'state') this.#data.state = data 
-    else if (name === 'log') {
+    if (name === 'state') this.#data.state = data
+    else if (name === 'error') {
+      this.#data.worker.terminate()
+      this.#data.worker = undefined
+      this.#callEvent('log', { type: 'normal', content: getErrorLogContent(data), location: {} })
+    } else if (name === 'log') {
       if (this.#options.logToConsole) console.log(`${(data.type === 'actuator') ? '[執行器]: ' : ''}${data.content}`)
       if (this.#options.saveLog) this.#data.log.push(data)
-    }// else if (name === 'error') this.#callEvent('log', { type: 'normal', content: logError(data), location: {} })
+    }
 
     if (this.#event[name] !== undefined) Object.keys(this.#event[name]).forEach((item) => this.#event[name][item](data))
   }
@@ -97,6 +101,7 @@ class Actuator {
 export { Actuator }
 
 import checkObjectValueType from './Modules/Tools/CheckObjectValueType.js'
+import getErrorLogContent from './Modules/Tools/GetErrorLogContent.js'
 import getDiretoryPath from './Modules/Tools/GetDirectoryPath.js'
 import generateID from './Modules/Tools/GenerateID.js'
 import getPath from './Modules/Tools/GetPath.js'

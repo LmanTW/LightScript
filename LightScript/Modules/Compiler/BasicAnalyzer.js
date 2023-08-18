@@ -29,15 +29,15 @@ export default (code, filePath) => {
       line++
     } else if (code[i] === '(' || code[i] === '{' || code[i] === '[') {
       breakOff(code[i], i)
-      codeSegment.push({ type: code[i], line, layer, start: i, end: i })
+      codeSegment.push({ type: 'symbol', value: code[i], line, layer, start: i, end: i })
       layer++
     } else if (code[i] === ')' || code[i] === '}' || code[i] === ']') {
       breakOff(code[i], i)
       layer--
-      codeSegment.push({ type: code[i], line, layer, start: i, end: i })
+      codeSegment.push({ type: 'symbol', value: code[i], line, layer, start: i, end: i })
     } else if (code[i] === ',' || code[i] === ':') {
       breakOff(code[i], i)
-      codeSegment.push({ type: code[i], line, layer, start: i, end: i })
+      codeSegment.push({ type: 'symbol', value: code[i], line, layer, start: i, end: i })
     } else if (state.type === undefined) {
       if (code[i] === "'" || code[i] === '"') state = { type: 'string', value: '', symbol: code[i], line, layer, start: i }
       else if ('1234567890'.includes(code[i])) state = { type: 'number', value: code[i], line, layer, start: i }
@@ -63,9 +63,9 @@ export default (code, filePath) => {
           }
         } else state.value+=code[i]
       } else if (state.type === 'container') {
-        if (code[i] === "'" || code[i] === '"') {
+        if (code[i] === "'" || code[i] === '"' || '+-*/=><!或且?'.includes(code[i])) {
           breakOff('', i)
-          state = { type: 'string', value: '', symbol: code[i], line, layer, start: i }
+          i--
         } else state.value+=code[i]
       }
     }

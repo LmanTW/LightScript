@@ -13,6 +13,7 @@ import compile from '../Compiler/Main.js'
   await sendMessage({ type: 'event', name: 'state', data: 'compiling' })
 
   let codeSegment = compile(fs.readFileSync(mainFilePath, 'utf8'), mainFilePath)
-
+  if (codeSegment.error) await sendMessage({ type: 'event', name: 'error', data: codeSegment.errors[0] })
+  
   console.log(codeSegment)
 })()
