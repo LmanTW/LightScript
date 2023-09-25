@@ -1,7 +1,9 @@
 # Light Script
 一個基於 Javascript 的中文虛擬程式語言。
 
-> Light Script 是一個中文的虛擬編程語言，語法類似 Javascript，但是是中文的，同時少去了一些複雜的功能, 概念。我們希望 Light Script 可以幫助一些對編程有興趣的人用簡單, 有趣的方式入坑。
+> Light Script 是一個中文的虛擬編程語言，語法類似 Javascript 但是是中文的，同時少去了一些複雜的功能, 概念。我們希望 Light Script 可以幫助一些對編程有興趣的人用簡單, 有趣的方式入坑。
+
+~~(該專案的開發進度非常緩慢)~~
 
 ## 學習 Light Script
 
