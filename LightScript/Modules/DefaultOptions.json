@@ -1,0 +1,14 @@
+{
+  "maxTaskPerExecution": 10,
+  "maxVirtualMemory": 5000000,
+
+  "executionType": "instant", 
+  "executionInterval": "0",
+
+  "logToConsole": true,
+  "saveLog": false,
+  "actuatorLog": false,
+
+  "virtualDisk": null,
+  "maxVirtualDiskSpace": null
+}
