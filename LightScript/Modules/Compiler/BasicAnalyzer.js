@@ -42,6 +42,7 @@ export default (code, filePath) => {
       if (code[i] === "'" || code[i] === '"') state = { type: 'string', value: '', symbol: code[i], line, layer, start: i }
       else if ('1234567890'.includes(code[i])) state = { type: 'number', value: code[i], line, layer, start: i }
       else if ('+-*/=><!或且?'.includes(code[i])) state = { type: 'operator', value: code[i], line, layer, start: i }
+      else if (code[i] === '.') state = { type: 'key', value: '', line, layer, start: i }
       else state = { type: 'container', value: code[i], line, layer, start: i }
     } else {
       if (state.type === 'string') {
@@ -62,8 +63,13 @@ export default (code, filePath) => {
             i--
           }
         } else state.value+=code[i]
+      } else if (state.type === 'key') {
+        if (code[i] === "'" || code[i] === '"' || '+-*/=><!或且?'.includes(code[i]) || code[i] === '.') {
+          breakOff('', i)
+          i--
+        } else state.value+=code[i]
       } else if (state.type === 'container') {
-        if (code[i] === "'" || code[i] === '"' || '+-*/=><!或且?'.includes(code[i])) {
+        if (code[i] === "'" || code[i] === '"' || '+-*/=><!或且?'.includes(code[i]) || code[i] === '.') {
           breakOff('', i)
           i--
         } else state.value+=code[i]

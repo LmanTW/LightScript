@@ -78,7 +78,7 @@ function complexAnalyzer (codeSegment, type, filePath, location) {
                 if (state.value[i2][valueIndex].type === 'symbol' && state.value[i2][valueIndex].value === ':') {
                   value = state.value[i2].slice(valueIndex+1, state.value[i2].length)
                  
-                  if (value.length < 1) errors.push(createError('compiler', `多出了一個 : (無法指定後面的內容給項目 ${name}，因為後面沒有內容)`, state.value[i2][1].start, state.value[i2][valueIndex].end, [{ file: filePath, line: state.value[i2][valueIndex].line }]))
+                  if (value.length < 1) errors.push(createError('compiler', `多出了一個 <符號> ':' (因為後面沒有任何內容)`, state.value[i2][1].start, state.value[i2][valueIndex].end, [{ file: filePath, line: state.value[i2][valueIndex].line }]))
                   else {
                     let data = complexAnalyzer(value, 'item', filePath)
                     if (data.error) errors = errors.concat(data.errors)
