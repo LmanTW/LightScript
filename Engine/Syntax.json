@@ -1,0 +1,74 @@
+{
+  "relevance": {
+    "string": ["keyword", "operator", "indexes", "parameters"],
+    "number": ["keyword", "operator", "indexes"],
+    "nan": ["keyword", "operator"],
+    "boolean": ["keyword", "operator"],
+    "none": ["keyword", "operator"],
+    "array": ["keyword", "operator"],
+    "object": ["keyword", "operator", "key", "parameters"],
+    
+    "container": ["keyword", "operator", "key", "indexes", "parameters"],
+    "key": ["keyword", "operator", "key", "indexes", "parameters"],
+    "indexes": ["keyword", "operator", "key", "indexes", "parameters"],
+    "parameters": ["indexes", "chunk"]
+  },
+
+  "keywordSyntax": {
+    "的": [
+      ["<container>"]
+    ],
+    "從": [
+      ["<any>", "keyword:導入"]
+    ],
+    "導入": [
+      ["<container>"],
+      ["<object>"]
+    ],
+    "導出": [
+      ["<container>"],
+      ["<object>"]
+    ],
+    "連結": [
+      ["<container>"],
+      ["<container>", "<key>"],
+      ["<container>", "<index>"]
+    ],
+    "變數": [
+      ["<container>"],
+      ["<container>", "operator:=", "<any>"]
+    ],
+    "唯讀": [
+      ["keyword:變數"],
+      ["<container>"]
+    ],
+    "函數": [
+      ["<container>", "<parameters>", "<chunk>"],
+      ["<parameters>", "<chunk>"]
+    ],
+    "返回": [],
+    "等待": [
+      ["<container>"]
+    ],
+    "刪除": [
+      ["<container>"]
+    ],
+    "如果": [
+      ["<parameters>", "<chunk>"]
+    ],
+    "否則": [
+      ["<chunk>"]
+    ],
+    "重複": [
+      ["<parameters>", "<chunk>"]
+    ],
+    "跳出": [],
+    "異同步": [
+      ["keyword:函數"],
+      ["<string>"]
+    ],
+    "否則如果": [
+      ["<parameters>", "<chunk>"]
+    ]
+  }
+}
