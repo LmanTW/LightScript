@@ -47,8 +47,12 @@ export default async (code, mode, filePath) => {
         layer--
         codeSegment.push({ type: 'symbol', value: code[i], line, layer, start: i, end: i })
       }
-    } else if (code[i] === ',') {
-      if (breakOff(code[i], false)) codeSegment.push({ type: 'symbol', value: ',', line, layer, start: i, end: i })
+    } else if (',:'.includes(code[i])) {
+      if (breakOff(code[i], false)) codeSegment.push({ type: 'symbol', value: code[i], line, layer, start: i, end: i })
+    } else if (code[i] === '.') {
+      if (state.type !== 'number') {
+        if (breakOff(',')) state = { type: 'key', value: '', line, layer, start: i }
+      }
     } else if (state.type === undefined) {
       if (code[i] === "'" || code[i] === '"') state = { type: 'string', value: '', symbol: code[i], line, layer, start: i }
       else if ('1234567890.'.includes(code[i])) state = { type: 'number', value: code[i], line, layer, start: i }
@@ -69,6 +73,9 @@ export default async (code, mode, filePath) => {
       } else if (state.type === 'container') {
         if (code[i] === "'" || code[i] === '"' || operators.includes(code[i]) || code[i] === '.') breakOff('', true)
         else state.value+=code[i]
+      } else if (state.type === 'key') {
+        if (code[i] === "'" || code[i] === '"' || operators.includes(code[i]) || code[i] === '.') breakOff('', true)
+        else state.value+=code[i]
       }
     }
   }
@@ -77,6 +84,7 @@ export default async (code, mode, filePath) => {
   else await lazyLoop(() => i < code.length-1, tick)
 
   if (state.type === 'string') errors.push({ conecnt: '<字串> 無法閉合', location: [{ file: filePath, line: state.line, start: state.start, end: code.length-1 }] })
+  else if (state.type !== undefined) codeSegment.push({ type: state.type, value: state.value, line: state.line, layer: state.layer, start: state.start, end: code.length-1 })
 
   return { error: errors.length > 0, errors, data: codeSegment }
 }
