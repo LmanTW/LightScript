@@ -1,5 +1,7 @@
 export default analyzeComplexType
 
+import lazyLoop from '../../Tools/LazyLoop.js'
+
 import { checkRelevance, checkKeywordSyntax } from './SyntaxChecker.js'
 
 import typesName from '../../TypesName.json' assert { type: 'json' }

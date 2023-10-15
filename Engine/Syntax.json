@@ -1,17 +1,17 @@
 {
   "relevance": {
-    "string": ["keyword", "operator", "indexes", "parameters"],
-    "number": ["keyword", "operator", "indexes"],
+    "string": ["keyword", "operator", "index", "parameters"],
+    "number": ["keyword", "operator", "index"],
     "nan": ["keyword", "operator"],
     "boolean": ["keyword", "operator"],
     "none": ["keyword", "operator"],
     "array": ["keyword", "operator"],
     "object": ["keyword", "operator", "key", "parameters"],
     
-    "container": ["keyword", "operator", "key", "indexes", "parameters"],
-    "key": ["keyword", "operator", "key", "indexes", "parameters"],
-    "indexes": ["keyword", "operator", "key", "indexes", "parameters"],
-    "parameters": ["indexes", "chunk"]
+    "container": ["keyword", "operator", "key", "index", "parameters"],
+    "key": ["keyword", "operator", "key", "index", "parameters"],
+    "index": ["keyword", "operator", "key", "index", "parameters"],
+    "parameters": ["index", "chunk"]
   },
 
   "keywordSyntax": {
