@@ -20,5 +20,3 @@ export default (condition, callback) => {
     tick()
   })
 }
-
-import { createInterval, deleteInterval } from './Interval.js'

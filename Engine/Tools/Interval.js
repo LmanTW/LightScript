@@ -19,8 +19,6 @@ function startTimer () {
   }, 1)
 }
 
-startTimer()
-
 //創建間隔器
 function createInterval (interval, callback) {
   let id = generateID(5, Object.keys(timers)) 

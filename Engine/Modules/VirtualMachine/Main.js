@@ -2,7 +2,8 @@
 export default class {
   #options
   #data = {
-    
+    state: 'idle',
+    logs: []
   }
 
   constructor (options) {
@@ -37,18 +38,32 @@ export default class {
     }, this.#options)
 
     this.vMem = new VirtualMemory()
-
-    this.vMem.write('info', 1)
+    this.taskManager = new TaskManager(this.#options.maxTaskPerExecution)
+    this.chunkManager = new ChunkManager(this)
   }
 
+  get options () {return this.#options}
   get state () {return this.#data.state}
 
-  //執行
-  async run () {
+  //運行
+  async run (codeSegment) {
+    if (this.#data.state === 'idle') {
+      this.vMem.reset()
+      this.taskManager.clear()
+
+      this.vMem.write('', { codeSegments: { main: codeSegment }, chunks: {} })
+      this.vMem.write('mainChunkID', this.chunkManager.createChunk('normal', 'main', undefined, '0', 'main', undefined, false))
+
+      this.executionLoop = new ExecutionLoop(this)
+    } else if (this.#data.state === 'pause') {
     
+    } else throw new Error(`無法運運行虛擬機 (狀態: ${this.#data.state})`)
   }
 }
 
 import checkObjectValue from '../../Tools/CheckObjectValue.js'
 
 import VirtualMemory from './VirtualMemory.js'
+import ExecutionLoop from './ExecutionLoop.js'
+import ChunkManager from './ChunkManager.js'
+import TaskManager from './TaskManager.js'
